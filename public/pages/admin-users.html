@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des utilisateurs - ONECCA Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/">ONECCA Cameroun</a>
+        </div>
+        <div class="nav-links" id="navLinks"></div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h3>Liste des utilisateurs inscrits</h3>
+            </div>
+            <div class="table-container">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom complet</th>
+                            <th>Email</th>
+                            <th>Téléphone</th>
+                            <th>Date d'inscription</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        async function loadUsers() {
+            try {
+                const users = await api.getUsers();
+                displayUsers(users);
+            } catch (error) {
+                showError('Erreur lors du chargement des utilisateurs');
+            }
+        }
+        
+        function displayUsers(users) {
+            const container = document.getElementById('usersTable');
+            if (!container) return;
+            
+            if (users.length === 0) {
+                container.innerHTML = '<tr><td colspan="6">Aucun utilisateur inscrit</td></tr>';
+                return;
+            }
+            
+            container.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${escapeHtml(user.full_name)}</td>
+                    <td>${escapeHtml(user.email)}</td>
+                    <td>${user.phone || '-'}</td>
+                    <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteUser(${user.id})">Supprimer</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        async function deleteUser(id) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) return;
+            
+            try {
+                await api.deleteUser(id);
+                showSuccess('Utilisateur supprimé avec succès');
+                loadUsers();
+            } catch (error) {
+                showError('Erreur lors de la suppression');
+            }
+        }
+        
+        function showError(message) {
+            alert('Erreur: ' + message);
+        }
+        
+        function showSuccess(message) {
+            alert('Succès: ' + message);
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!await auth.checkAuth()) return;
+            if (!auth.isAdmin()) {
+                window.location.href = '/pages/user-dashboard.html';
+                return;
+            }
+            
+            await loadUsers();
+            initNavigation();
+        });
+    </script>
+</body>
+</html>

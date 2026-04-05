@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ONECCA</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/">ONECCA Cameroun</a>
+        </div>
+        <div class="nav-links" id="navLinks"></div>
+    </nav>
+
+    <div class="container">
+        <!-- Statistiques -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="number" id="totalMembers">0</div>
+                <div class="label">Membres</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="totalUsers">0</div>
+                <div class="label">Utilisateurs</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="pendingRequests">0</div>
+                <div class="label">Demandes en attente</div>
+            </div>
+        </div>
+
+        <!-- Gestion des membres -->
+        <div class="card">
+            <div class="card-header">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3>Gestion des membres</h3>
+                    <button class="btn btn-success" onclick="showAddMemberModal()">+ Ajouter un membre</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>N° inscription</th>
+                            <th>Nom complet</th>
+                            <th>Catégorie</th>
+                            <th>Ville</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Demandes d'accès -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Demandes d'accès aux coordonnées</h3>
+            </div>
+            <div class="table-container">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Email</th>
+                            <th>Membre demandé</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal formulaire membre -->
+    <div id="memberFormModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="memberFormTitle">Ajouter un membre</h3>
+                <span class="close-modal" onclick="document.getElementById('memberFormModal').classList.remove('active')">&times;</span>
+            </div>
+            <div class="modal-body" id="memberFormBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="document.getElementById('memberFormModal').classList.remove('active')">Annuler</button>
+                <button class="btn btn-primary" onclick="saveMember()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
+    <script>
+        function showLoading() {
+            // Optionnel
+        }
+        
+        function hideLoading() {
+            // Optionnel
+        }
+        
+        function showError(message) {
+            alert('Erreur: ' + message);
+        }
+        
+        function showSuccess(message) {
+            alert('Succès: ' + message);
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function getCategoryLabel(category) {
+            const labels = {
+                'liberal': 'Libéral',
+                'societe': 'Société',
+                'salarie': 'Salarié',
+                'stagiaire': 'Stagiaire',
+                'gouvernance': 'Gouvernance'
+            };
+            return labels[category] || category;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Utilisateur - ONECCA</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/">ONECCA Cameroun</a>
+        </div>
+        <div class="nav-links" id="navLinks"></div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2>Annuaire des experts-comptables</h2>
+                <p>Tableau ONECCA 2026</p>
+            </div>
+            
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Rechercher par nom, n° d'inscription ou ville..." onkeyup="searchMembers()">
+                <select id="categoryFilter" onchange="searchMembers()">
+                    <option value="">Toutes les catégories</option>
+                </select>
+                <select id="cityFilter" onchange="searchMembers()">
+                    <option value="">Toutes les villes</option>
+                </select>
+                <button class="btn btn-primary" onclick="searchMembers()">Rechercher</button>
+            </div>
+            
+            <div id="loadingSpinner" class="spinner" style="display: none;"></div>
+            <div id="membersContainer" class="member-grid"></div>
+            <div id="pagination"></div>
+        </div>
+    </div>
+
+    <!-- Modal détails membre -->
+    <div id="memberModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Détails du membre</h3>
+                <span class="close-modal" onclick="document.getElementById('memberModal').classList.remove('active')">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="document.getElementById('memberModal').classList.remove('active')">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/user.js"></script>
+    <script>
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+        
+        function showError(message) {
+            alert(message);
+        }
+        
+        function showSuccess(message) {
+            alert(message);
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
